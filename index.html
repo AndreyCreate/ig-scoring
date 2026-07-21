@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Скоринг контента · @andreyandreev.me</title>
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:'Inter';src:url('fonts/Inter-Var.ttf') format('truetype');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Playfair Display';src:url('fonts/PlayfairDisplay.ttf') format('truetype');font-weight:400 900;font-display:swap}
+@font-face{font-family:'Playfair Display';src:url('fonts/PlayfairDisplay-Italic.ttf') format('truetype');font-weight:400 900;font-style:italic;font-display:swap}
+@font-face{font-family:'Roboto Mono';src:url('fonts/RobotoMono.ttf') format('truetype');font-weight:100 700;font-display:swap}
+:root{
+  --cream:#F2EDE8;--cream-2:#F6F2EE;--white:#FFFFFF;
+  --ink:#000000;--ink-2:#2B2B2B;--ink-3:#5F5F5F;--ink-mute:#919191;
+  --blue:#85ACD7;--blue-2:#88B4E3;--blue-deep:#0F5DB0;--blue-pale:#BFDEFF;
+  --orange:#E4512C;--yellow:#F5BF4F;--coral:#FF8562;
+  --r-card:20px;--r-pill:100px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--cream);font-family:'Inter',Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+.mono{font-family:'Roboto Mono',monospace}
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:22px 0 0;flex-wrap:wrap}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);background:var(--white);border:1px solid rgba(0,0,0,.12);border-radius:var(--r-pill);padding:7px 14px;white-space:nowrap}
+.brand{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);white-space:nowrap}
+.brand i{font-style:italic;font-weight:500}
+.hero{padding:56px 0 40px}
+.hero h1{font-size:48px;font-weight:650;letter-spacing:-.02em;line-height:1.08;max-width:860px}
+.hero h1 .serif{font-family:'Playfair Display',serif;font-style:italic;font-weight:500}
+.hero .sub{margin-top:16px;font-size:15px;color:var(--ink-3);max-width:600px}
+.hero .sub b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:36px 0 48px}
+.kpi{position:relative;background:var(--white);border-radius:16px;padding:18px 18px 16px;border:1px solid rgba(0,0,0,.06)}
+.kpi .k-lbl{font-family:'Roboto Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.kpi .k-num{font-size:30px;font-weight:680;letter-spacing:-.02em;margin-top:6px;line-height:1}
+.kpi .k-foot{font-size:12px;color:var(--ink-mute);margin-top:7px}
+.blue{background:var(--blue);border-radius:28px 28px 0 0;padding:52px 0 60px}
+.blue .sec-eyebrow{font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.9);margin-bottom:10px}
+.blue h2{color:var(--white);font-size:32px;font-weight:650;letter-spacing:-.02em;margin-bottom:30px;max-width:720px}
+.blue h2 .serif{font-family:'Playfair Display',serif;font-style:italic;font-weight:500}
+.card{background:var(--white);border-radius:var(--r-card);padding:26px 26px 22px;margin-bottom:18px}
+.card h3{font-size:22px;font-weight:640;letter-spacing:-.015em;margin:4px 0 4px}
+.card .note{font-family:'Roboto Mono',monospace;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:14px}
+.card p.expl{font-size:14px;color:var(--ink-3);max-width:640px;margin:8px 0 14px}
+.card p.expl b{color:var(--ink)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:4px 0 10px}
+.lg{display:flex;align-items:center;gap:7px;font-family:'Roboto Mono',monospace;font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-3)}
+.lg .dot{width:11px;height:11px;border-radius:3px;flex:none}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.sticky{display:inline-block;background:var(--yellow);padding:16px 20px;font-size:16px;font-weight:560;line-height:1.45;max-width:620px;border-radius:2px;box-shadow:4px 5px 0 rgba(0,0,0,.08);transform:rotate(-.4deg);margin:8px 0 8px}
+.sec{padding:52px 0 8px}
+.sec h2{font-size:32px;font-weight:650;letter-spacing:-.02em;margin-bottom:8px}
+.sec h2 .serif{font-family:'Playfair Display',serif;font-style:italic;font-weight:500}
+.sec .lead{font-size:15px;color:var(--ink-3);max-width:680px;margin-bottom:26px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{padding:10px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid rgba(0,0,0,.08)}
+th{font-family:'Roboto Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-mute)}
+td:first-child,th:first-child{text-align:left;font-weight:620;color:var(--ink)}
+tbody tr:hover{background:var(--cream-2)}
+.tag{display:inline-block;font-family:'Roboto Mono',monospace;font-size:10px;letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);background:var(--cream);color:var(--ink-2);font-weight:500}
+.tag.hot{background:var(--blue-pale);color:var(--blue-deep)}
+.tag.warn{background:#FDE3DA;color:var(--orange)}
+.hi{color:var(--blue-deep);font-weight:680}
+.lo{color:var(--orange);font-weight:680}
+.muted{color:var(--ink-mute)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+/* calculator */
+.calc{background:var(--white);border-radius:var(--r-card);padding:28px;margin:10px 0 26px}
+.calc .row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+.calc label{display:block;font-family:'Roboto Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.calc select{width:100%;font-family:'Inter';font-size:14px;padding:10px 12px;border:1px solid rgba(0,0,0,.15);border-radius:10px;background:var(--cream-2);color:var(--ink);appearance:auto}
+.checks{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 18px}
+.chk{display:flex;align-items:center;gap:8px;background:var(--cream-2);border:1px solid rgba(0,0,0,.1);border-radius:var(--r-pill);padding:9px 16px;font-size:13.5px;cursor:pointer;user-select:none}
+.chk input{accent-color:var(--blue-deep);width:15px;height:15px}
+.chk.on{background:var(--blue-pale);border-color:var(--blue-deep)}
+.score-bars{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+.sb .s-lbl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.sb .s-name{font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.sb .s-val{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.sb .track{height:14px;background:var(--cream);border-radius:8px;overflow:hidden}
+.sb .fill{height:100%;border-radius:8px;transition:width .35s ease}
+.verdict{margin-top:18px;padding:16px 20px;border-radius:14px;font-size:15px;font-weight:560;line-height:1.45}
+.v-do{background:#E7F2E9;color:#215B33}
+.v-work{background:var(--blue-pale);color:var(--blue-deep)}
+.v-show{background:#FFF3D6;color:#7A5A00}
+.v-weak{background:#FDE3DA;color:#9C2F12}
+.bets{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 30px}
+.bet{background:var(--white);border-radius:16px;padding:20px;border:1px solid rgba(0,0,0,.06)}
+.bet .b-num{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;color:var(--blue-deep)}
+.bet h4{font-size:16px;font-weight:640;margin:6px 0 6px}
+.bet p{font-size:13.5px;color:var(--ink-3)}
+.limits{font-size:12.5px;color:var(--ink-mute);max-width:760px;margin:2px 0 40px}
+.limits li{margin:4px 0 4px 16px}
+.foot-sec{background:#0E0E0E;padding:40px 0 40px;margin-top:30px}
+.foot-sec .container{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#8a8a8a;font-size:12.5px}
+.foot-sec a{color:#cfcfcf;text-decoration:none}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;line-height:1.4;padding:8px 11px;border-radius:9px;opacity:0;transition:opacity .12s;z-index:50;max-width:240px}
+@media(max-width:860px){
+ .kpis{grid-template-columns:repeat(2,1fr)}
+ .hero h1{font-size:34px}
+ .grid2{grid-template-columns:1fr}
+ .calc .row{grid-template-columns:1fr}
+ .score-bars{grid-template-columns:1fr}
+ .bets{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="container topbar">
+  <div class="brand">Скоринг <i>контента</i></div>
+  <div class="pills">
+    <span class="pill">756 постов</span>
+    <span class="pill">2 года</span>
+    <span class="pill">обновлено 21.07.2026</span>
+  </div>
+</div>
+
+<div class="container hero">
+  <h1>Какие показатели <span class="serif">работают</span> — и почему</h1>
+  <p class="sub">Каждый пост @andreyandreev.me с июля 2024 разобран по охвату, репостам, сохранениям и подпискам, размечен по теме и хуку. Ниже — законы, которые из этого следуют, и модель, которая оценивает пост <b>до публикации</b>.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="k-lbl">Подписчиков с каруселей</div><div class="k-num">~23 700</div><div class="k-foot">оценка: охват × подписка, 2 года</div></div>
+    <div class="kpi"><div class="k-lbl">Репосты → подписка</div><div class="k-num">+0.66</div><div class="k-foot">сильнейшая корреляция аккаунта</div></div>
+    <div class="kpi"><div class="k-lbl">Зодиак-серия, охват</div><div class="k-num">68×</div><div class="k-foot">от медианы аккаунта · 12 постов</div></div>
+    <div class="kpi"><div class="k-lbl">Хук «инструкция»</div><div class="k-num">×3</div><div class="k-foot">к подписке против медианы</div></div>
+  </div>
+</div>
+
+<div class="blue">
+  <div class="container">
+    <div class="sec-eyebrow">Часть 1 · Законы аккаунта</div>
+    <h2>Три закона, проверенные <span class="serif">на твоих данных</span></h2>
+
+    <div class="card">
+      <h3>1 · Подписчиков приводят репосты, а не комментарии</h3>
+      <div class="note">Корреляция каждой метрики с подпиской · 426 каруселей · Spearman</div>
+      <p class="expl">Пост, которым делятся, растит базу. Пост, под которым спорят, — почти нет. Это совпадает с тем, как сам Instagram ранжирует: для показа новым людям главный сигнал — <b>sends per reach</b> (подтверждено Мосери).</p>
+      <div id="chart-corr"></div>
+    </div>
+
+    <div class="card">
+      <h3>2 · Карусель бьёт рилс по всем метрикам роста</h3>
+      <div class="note">Медианы формата · 426 каруселей vs 330 рилсов</div>
+      <p class="expl">Ставка на 98% каруселей — не привычка, а статистически верная стратегия: у карусели выше и охват, и репосты, и сохранения.</p>
+      <div id="chart-format"></div>
+    </div>
+
+    <div class="card">
+      <h3>3 · Виральность и подписка — два разных скора</h3>
+      <div class="note">Каждая точка — пост · оси: репосты % и подписка % от охвата · пороги = твои топ-25%</div>
+      <p class="expl">36 постов — «виральные без подписки»: их массово репостят, но никто не подписывается. Рекорд: пост 09.07.2026 — охват 136K, репосты 5.75%, подписка ниже медианы. Поэтому один усреднённый балл всегда врёт — скора должно быть два.</p>
+      <div class="legend">
+        <span class="lg"><span class="dot" style="background:#0F5DB0"></span>магниты подписки</span>
+        <span class="lg"><span class="dot" style="background:#E4512C"></span>вирал без подписки</span>
+        <span class="lg"><span class="dot" style="background:#C9C2BA"></span>остальные посты</span>
+      </div>
+      <div id="chart-scatter"></div>
+    </div>
+
+    <div class="sticky">Зодиак-серия (12 постов, апрель 2026) привела ~6 400 подписчиков — 27% всего прироста за два года. Базовый охват после неё <u>не вырос</u>: аудитория прибавилась, вовлечение — нет.</div>
+  </div>
+</div>
+
+<div class="container sec">
+  <h2>Что делает <span class="serif">каждая тема</span></h2>
+  <p class="lead">Медианы в % от охвата. Читать так: «Репосты» — виральный потенциал, «Подписка» — рост базы, «Сохранения» — ценность для своих. Роль — что тема реально умеет.</p>
+  <div class="tbl-wrap">
+  <table id="theme-table">
+    <thead><tr><th>Тема</th><th>Постов</th><th>Охват</th><th>Репосты %</th><th>Сохр. %</th><th>Подписка %</th><th>Подписчиков привела</th><th>Роль</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+</div>
+
+<div class="container sec">
+  <h2>Модель: <span class="serif">два скора</span> вместо одного балла</h2>
+  <p class="lead">V — виральный потенциал (репосты, охват). T — целевой рост (подписка × качество аудитории для коучинга: зодиак приводит много, но нецелевых — его вес 0.2). Выбери параметры будущего поста — модель посчитает.</p>
+
+  <div class="calc" id="calc">
+    <div class="row">
+      <div>
+        <label>Тема поста</label>
+        <select id="c-theme">
+          <option value="dengi">Деньги / финансовое мышление</option>
+          <option value="citaty">Цитаты великих</option>
+          <option value="psy">Психология / поведение</option>
+          <option value="case">Коучинг-кейс</option>
+          <option value="prodazhi">Продажи / анонс</option>
+          <option value="praktiki">Практики (упражнение)</option>
+          <option value="lichnoe">Личная история</option>
+          <option value="zodiak">Зодиак / гороскоп-механика</option>
+          <option value="humor">Юмор / мем</option>
+          <option value="foto">Творчество / фото</option>
+        </select>
+      </div>
+      <div>
+        <label>Хук первой строки</label>
+        <select id="c-hook">
+          <option value="instr">Инструкция («как сделать X»)</option>
+          <option value="prov">Провокация</option>
+          <option value="hist">История</option>
+          <option value="vopros">Вопрос</option>
+          <option value="chislo">Число / список</option>
+          <option value="other">Другое</option>
+        </select>
+      </div>
+    </div>
+    <div class="checks">
+      <label class="chk"><input type="checkbox" id="c-celeb"> Имя известного человека в первых 2 строках</label>
+      <label class="chk"><input type="checkbox" id="c-share"> Share-триггер («отправь тому, у кого…»)</label>
+      <label class="chk"><input type="checkbox" id="c-code"> CTA код-слово в комменты</label>
+      <label class="chk"><input type="checkbox" id="c-car" checked> Формат: карусель</label>
+    </div>
+    <div class="score-bars">
+      <div class="sb">
+        <div class="s-lbl"><span class="s-name">V · виральный потенциал</span><span class="s-val" id="v-val">0</span></div>
+        <div class="track"><div class="fill" id="v-fill" style="width:0%;background:#0F5DB0"></div></div>
+      </div>
+      <div class="sb">
+        <div class="s-lbl"><span class="s-name">T · целевой рост</span><span class="s-val" id="t-val">0</span></div>
+        <div class="track"><div class="fill" id="t-fill" style="width:0%;background:#E4512C"></div></div>
+      </div>
+    </div>
+    <div class="verdict v-work" id="verdict">…</div>
+  </div>
+</div>
+
+<div class="container sec">
+  <h2>Пять ставок <span class="serif">из данных</span></h2>
+  <div class="bets">
+    <div class="bet"><div class="b-num">01</div><h4>Хук-«инструкция» — в ротацию немедленно</h4><p>10 постов за два года дали втрое лучшую подписку (0.095% против 0.037%). Формула: «Как [результат ЦА] без [боль]» + карусель-шаги. 1–2 в неделю.</p></div>
+    <div class="bet"><div class="b-num">02</div><h4>Цитаты великих — регулярный слот</h4><p>Лучший целевой конвертер: подписка 0.058% при топ-сохранениях. Бумажный формат уже подтвердил: 200 подписок с одного поста.</p></div>
+    <div class="bet"><div class="b-num">03</div><h4>Виральные серии — раз в квартал, с мостом</h4><p>Механика зодиака работает как взрыв охвата. Следующую серию — на целевой теме: «финансовые сценарии по типам» вместо знаков зодиака.</p></div>
+    <div class="bet"><div class="b-num">04</div><h4>Практики — KPI сохранения, не подписки</h4><p>Топ по сохранениям (2.87%), почти ноль подписки (0.019%). Это удержание своих — и это нормально, просто не ждать от них роста.</p></div>
+    <div class="bet"><div class="b-num">05</div><h4>Комменты — не сигнал успеха</h4><p>Корреляция с подпиской всего +0.24. Порядок чтения метрик поста: репосты → сохранения → подписки → и только потом лайки и комментарии.</p></div>
+  </div>
+  <ul class="limits">
+    <li>Метрика «подписки с поста» есть только у каруселей/фото (426 постов) — у рилсов Instagram её не отдаёт.</li>
+    <li>«Качество аудитории» оценено весами тем и кейсом зодиак-серии; прямой метрики «подписчик → клиент» у Instagram нет. Следующий уровень — связка с код-словами ChatPlace.</li>
+    <li>Оценка приведённых подписчиков = охват × подписка/охват; сумма не обязана совпадать с приростом счётчика (отписки, другие источники).</li>
+  </ul>
+</div>
+
+<div class="foot-sec">
+  <div class="container">
+    <span>Данные: Instagram Graph API · 01.07.2024–21.07.2026 · разметка тем: 13 агентов</span>
+    <span><a href="https://andreycreate.github.io/ig-analytics/">Еженедельная аналитика →</a></span>
+  </div>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const CORR=[["Репосты",0.66],["Охват",0.63],["Лайки",0.51],["Сохранения",0.50],["Комментарии",0.24]];
+const FMT=[
+ {m:"Охват (медиана)",car:5983,reel:2747,fmt:v=>v.toLocaleString('ru-RU')},
+ {m:"Репосты, % охвата",car:0.649,reel:0.207,fmt:v=>v.toFixed(2)+'%'},
+ {m:"Сохранения, % охвата",car:1.636,reel:0.851,fmt:v=>v.toFixed(2)+'%'}
+];
+const THEMES=[
+ ["Зодиак / астрология",12,"306 788",3.30,1.91,0.133,"~6 424","взрыв охвата, нецелевые подписчики","warn"],
+ ["Деньги",55,"6 974",0.65,1.53,0.033,"~6 010","рабочая лошадь роста","hot"],
+ ["Продажи / анонсы",192,"4 996",0.39,1.44,0.068,"~5 144","конвертят (код-слова работают)","hot"],
+ ["Психология / поведение",233,"3 714",0.52,1.52,0.032,"~3 205","ядро контента, середина по всему",""],
+ ["Коучинг-кейсы",65,"4 551",0.47,1.40,0.032,"~904","середина; бывают share-взрывы",""],
+ ["Цитаты великих",38,"4 907",0.93,2.06,0.058,"~844","лучший целевой конвертер","hot"],
+ ["Личная история",53,"4 880",0.22,0.60,0.032,"~629","тепло, но не растит",""],
+ ["Практики",14,"4 622",0.72,2.87,0.019,"~21","удержание своих, не рост",""],
+ ["Юмор / мем",4,"13 497",1.12,1.30,0.046,"~97","мало данных, потенциал охвата",""],
+ ["Творчество / фото",54,"2 886",0.06,0.34,0.000,"~1","витрина; ноль роста, зато комменты","warn"]
+];
+const BLUE='#0F5DB0', ORANGE='#E4512C', GRAY='#C9C2BA', INK3='#5F5F5F', MUTE='#919191';
+const tip=document.getElementById('tip');
+function showTip(html,x,y){tip.innerHTML=html;tip.style.opacity=1;tip.style.left=Math.min(x+14,window.innerWidth-260)+'px';tip.style.top=(y+14)+'px'}
+function hideTip(){tip.style.opacity=0}
+
+/* corr bars — magnitude, one hue */
+(function(){
+ const W=720,BH=30,G=14,LX=150,max=0.7;
+ let s=`<svg viewBox="0 0 ${W} ${CORR.length*(BH+G)}" role="img" aria-label="Корреляция метрик с подпиской">`;
+ CORR.forEach((d,i)=>{
+  const y=i*(BH+G),w=(W-LX-70)*d[1]/max;
+  s+=`<text x="${LX-10}" y="${y+BH/2+4}" text-anchor="end" font-size="13" fill="${INK3}">${d[0]}</text>`;
+  s+=`<rect class="cb" data-t="${d[0]}: +${d[1].toFixed(2)} к подписке" x="${LX}" y="${y}" width="${Math.max(w,3)}" height="${BH}" rx="4" fill="${BLUE}" fill-opacity="${d[1]>0.6?1:0.55}"/>`;
+  s+=`<text x="${LX+w+8}" y="${y+BH/2+4}" font-size="13" font-weight="650" fill="#000">+${d[1].toFixed(2)}</text>`;
+ });
+ s+='</svg>';
+ document.getElementById('chart-corr').innerHTML=s;
+})();
+
+/* format compare — 3 paired rows, direct labels */
+(function(){
+ const W=720,RH=56,LX=170;
+ let s=`<svg viewBox="0 0 ${W} ${FMT.length*RH+24}" role="img" aria-label="Карусель против рилса">`;
+ s+=`<text x="${LX}" y="12" font-size="11" font-family="Roboto Mono" fill="${BLUE}" font-weight="600">КАРУСЕЛЬ</text><text x="${LX+110}" y="12" font-size="11" font-family="Roboto Mono" fill="${MUTE}" font-weight="600">РИЛС</text>`;
+ FMT.forEach((d,i)=>{
+  const y=26+i*RH, maxv=Math.max(d.car,d.reel), bw=W-LX-90;
+  s+=`<text x="${LX-10}" y="${y+13}" text-anchor="end" font-size="12.5" fill="${INK3}">${d.m}</text>`;
+  s+=`<rect class="cb" data-t="Карусель · ${d.m}: ${d.fmt(d.car)}" x="${LX}" y="${y}" width="${bw*d.car/maxv}" height="16" rx="4" fill="${BLUE}"/>`;
+  s+=`<text x="${LX+bw*d.car/maxv+8}" y="${y+13}" font-size="12.5" font-weight="650">${d.fmt(d.car)}</text>`;
+  s+=`<rect class="cb" data-t="Рилс · ${d.m}: ${d.fmt(d.reel)}" x="${LX}" y="${y+20}" width="${bw*d.reel/maxv}" height="16" rx="4" fill="${GRAY}"/>`;
+  s+=`<text x="${LX+bw*d.reel/maxv+8}" y="${y+33}" font-size="12.5" fill="${INK3}">${d.fmt(d.reel)}</text>`;
+ });
+ s+='</svg>';
+ document.getElementById('chart-format').innerHTML=s;
+})();
+
+/* scatter */
+fetch('points.json').then(r=>r.json()).then(pts=>{
+ const W=760,H=420,PL=64,PB=44,PT=10,PR=14;
+ const XMAX=4.6,YMAX=0.46,QX=1.18,QY=0.114;
+ const x=v=>PL+(W-PL-PR)*v/XMAX, y=v=>H-PB-(H-PB-PT)*v/YMAX;
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Репосты против подписки, каждая точка — пост">`;
+ for(let gv=0; gv<=4; gv++) s+=`<line x1="${x(gv)}" y1="${PT}" x2="${x(gv)}" y2="${H-PB}" stroke="rgba(0,0,0,.06)"/><text x="${x(gv)}" y="${H-PB+18}" text-anchor="middle" font-size="11" fill="${MUTE}">${gv}%</text>`;
+ for(let gv=0; gv<=0.4+1e-9; gv+=0.1) s+=`<line x1="${PL}" y1="${y(gv)}" x2="${W-PR}" y2="${y(gv)}" stroke="rgba(0,0,0,.06)"/><text x="${PL-8}" y="${y(gv)+4}" text-anchor="end" font-size="11" fill="${MUTE}">${gv.toFixed(1)}%</text>`;
+ s+=`<line x1="${x(QX)}" y1="${PT}" x2="${x(QX)}" y2="${H-PB}" stroke="#000" stroke-dasharray="4 4" stroke-opacity=".35"/>`;
+ s+=`<line x1="${PL}" y1="${y(QY)}" x2="${W-PR}" y2="${y(QY)}" stroke="#000" stroke-dasharray="4 4" stroke-opacity=".35"/>`;
+ s+=`<text x="${x(QX)+6}" y="${PT+14}" font-size="10.5" font-family="Roboto Mono" fill="${INK3}">РЕПОСТЫ ТОП-25% →</text>`;
+ s+=`<text x="${W-PR}" y="${y(QY)-7}" text-anchor="end" font-size="10.5" font-family="Roboto Mono" fill="${INK3}">ПОДПИСКА ТОП-25% ↑</text>`;
+ s+=`<text x="${(PL+W-PR)/2}" y="${H-8}" text-anchor="middle" font-size="11.5" fill="${INK3}">Репосты, % от охвата</text>`;
+ const order=[...pts].sort((a,b)=>(a.f>=QY?1:0)+(a.s>=QX?1:0)-((b.f>=QY?1:0)+(b.s>=QX?1:0)));
+ order.forEach(p=>{
+  const viral=p.s>=QX, sub=p.f>=QY;
+  const col=sub?BLUE:(viral?ORANGE:GRAY);
+  const rr=p.r>50000?6:(p.r>15000?4.5:3);
+  s+=`<circle class="cb" data-t="${p.d} · ${p.t}<br>охват ${p.r.toLocaleString('ru-RU')} · репосты ${p.s}% · подписка ${p.f}%" cx="${x(p.s)}" cy="${y(p.f)}" r="${rr}" fill="${col}" fill-opacity="${col===GRAY?0.5:0.85}" stroke="#fff" stroke-width="1"/>`;
+ });
+ s+='</svg>';
+ document.getElementById('chart-scatter').innerHTML=s;
+ hookTips();
+});
+
+function hookTips(){
+ document.querySelectorAll('.cb').forEach(el=>{
+  el.addEventListener('mousemove',e=>showTip(el.dataset.t,e.clientX,e.clientY));
+  el.addEventListener('mouseleave',hideTip);
+ });
+}
+hookTips();
+
+/* theme table */
+(function(){
+ const tb=document.querySelector('#theme-table tbody');
+ tb.innerHTML=THEMES.map(t=>{
+  const cls=v=>v>=1?'hi':(v<0.2?'lo':'');
+  const fcls=v=>v>=0.055?'hi':(v<0.02?'lo':'');
+  return `<tr><td>${t[0]}</td><td class="muted">${t[1]}</td><td>${t[2]}</td><td class="${cls(t[3])}">${t[3].toFixed(2)}</td><td>${t[4].toFixed(2)}</td><td class="${fcls(t[5])}">${t[5].toFixed(3)}</td><td>${t[6]}</td><td><span class="tag ${t[8]}">${t[7]}</span></td></tr>`;
+ }).join('');
+})();
+
+/* calculator */
+const VT={
+ theme:{
+  dengi:{v:1.5,t:3}, citaty:{v:2,t:3}, psy:{v:1,t:2}, case:{v:1,t:2},
+  prodazhi:{v:1,t:2}, praktiki:{v:1.5,t:0.5}, lichnoe:{v:0,t:0.5},
+  zodiak:{v:4,t:1.5}, humor:{v:2,t:1}, foto:{v:0,t:0.5}
+ },
+ hook:{
+  instr:{v:2,t:2}, prov:{v:1,t:1.5}, hist:{v:0.5,t:0.5}, vopros:{v:0.5,t:0.5},
+  chislo:{v:-1,t:0}, other:{v:0,t:0}
+ }
+};
+function calc(){
+ const th=VT.theme[document.getElementById('c-theme').value];
+ const hk=VT.hook[document.getElementById('c-hook').value];
+ let v=th.v+hk.v, t=th.t+hk.t;
+ if(document.getElementById('c-celeb').checked){v+=1.5;t+=1}
+ if(document.getElementById('c-share').checked){v+=1.5;t+=0.5}
+ if(document.getElementById('c-code').checked){t+=1}
+ if(document.getElementById('c-car').checked){v+=1}
+ v=Math.max(0,Math.min(10,v*1.15)); t=Math.max(0,Math.min(10,t*1.35));
+ document.getElementById('v-val').textContent=v.toFixed(1);
+ document.getElementById('t-val').textContent=t.toFixed(1);
+ document.getElementById('v-fill').style.width=(v*10)+'%';
+ document.getElementById('t-fill').style.width=(t*10)+'%';
+ const vd=document.getElementById('verdict');
+ let cls,txt;
+ if(v>=6&&t>=6){cls='v-do';txt='Делать немедленно. Редкое сочетание: виральный потенциал + целевой рост. Такие посты двигают аккаунт сильнее всего.'}
+ else if(t>=6){cls='v-work';txt='Рабочая лошадь. Целевых приводит, виральность средняя — ставить в регулярный слот, из таких складывается стабильный рост.'}
+ else if(v>=6){cls='v-show';txt='Виральная витрина. Охват даст, целевых — мало. Максимум 1–2 в месяц и обязательно с мостиком в ядро (следующий пост — конвертер).'}
+ else{cls='v-weak';txt='Слабый прогноз по обоим скорам. Пересобери хук (попробуй инструкцию) или смени тему — либо публикуй осознанно как витрину/личное.'}
+ vd.className='verdict '+cls; vd.textContent=txt;
+}
+document.querySelectorAll('#calc select,#calc input').forEach(el=>{
+ el.addEventListener('change',()=>{
+  document.querySelectorAll('.chk').forEach(c=>c.classList.toggle('on',c.querySelector('input').checked));
+  calc();
+ });
+});
+document.querySelectorAll('.chk').forEach(c=>c.classList.toggle('on',c.querySelector('input').checked));
+calc();
+</script>
+</body>
+</html>
