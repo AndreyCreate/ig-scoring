@@ -107,9 +107,29 @@ tbody tr:hover{background:var(--cream-2)}
  .score-bars{grid-template-columns:1fr}
  .bets{grid-template-columns:1fr}
 }
+
+/* ── nav strip (вариант B, 21.07.2026) ── */
+.navstrip{border-bottom:1px solid rgba(0,0,0,.1)}
+.navstrip .ns-inner{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.navstrip .nb{font-family:'Playfair Display',serif;font-size:17px;color:var(--ink);white-space:nowrap}
+.navstrip .nb i{font-style:italic;font-weight:500}
+.navstrip nav{display:flex;gap:22px;flex-wrap:wrap}
+.navstrip a{font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;color:var(--ink-3);padding-bottom:3px;white-space:nowrap}
+.navstrip a.active{color:var(--ink);border-bottom:2px solid var(--orange)}
+.navstrip a:hover{color:var(--ink)}
+@media(max-width:560px){.navstrip .ns-inner{padding:12px 16px}.navstrip nav{gap:14px}}
 </style>
 </head>
 <body>
+
+<div class="navstrip"><div class="ns-inner">
+  <div class="nb"><i>Create</i> Today</div>
+  <nav>
+    <a href="https://andreycreate.github.io/ig-analytics/">Аналитика</a>
+    <a class="active" href="https://andreycreate.github.io/ig-scoring/">Скоринг</a>
+    <a href="https://www.notion.so/f6f2cee938ce4a8c9d11f61f19fa7388">Конвейер&nbsp;↗</a>
+  </nav>
+</div></div>
 
 <div class="container topbar">
   <div class="brand">Скоринг <i>контента</i></div>
